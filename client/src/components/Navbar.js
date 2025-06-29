@@ -8,6 +8,10 @@ const menuItems = [
   { label: 'İLETİŞİM', path: '/iletisim' },
 ];
 
+const backendBaseUrl = process.env.NODE_ENV === 'production'
+  ? 'https://bybrawo.onrender.com'
+  : 'http://localhost:10000';
+
 const Navbar = ({ theme, banner }) => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -15,19 +19,9 @@ const Navbar = ({ theme, banner }) => {
   return (
     <>
       {/* Üstte sabit başlık ve banner */}
-      <header className="fixed top-0 left-0 w-full z-30 bg-black/80 border-b-4 border-theme-primary shadow-xl flex items-center justify-between px-4 md:px-0" style={{ position: 'relative', minHeight: '80px' }}>
+      <header className="fixed top-0 left-0 w-full z-30 bg-black/80 border-b-4 border-theme-primary shadow-xl flex items-center justify-between px-4 md:px-0" style={{ position: 'relative', minHeight: '80px', backgroundImage: 'url(https://cdn.openai.com/bybrawo-header.jpg)', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}>
         <div className="relative w-full md:w-auto flex items-center justify-center" style={{ minHeight: '64px' }}>
-          {banner && (
-            <img
-              src={`http://localhost:5000/uploads/banners/${banner.filename}`}
-              alt="Banner"
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain opacity-80 pointer-events-none select-none"
-              style={{ zIndex: 1, maxHeight: '80px' }}
-            />
-          )}
-          <span className="text-3xl md:text-5xl font-extrabold text-theme-primary text-center py-4 tracking-widest w-full md:w-auto" style={{ fontFamily: 'cursive', textShadow: '4px 4px 16px #000', position: 'relative', zIndex: 2 }}>
-            {theme?.title || 'ByBrawo'}
-          </span>
+          {/* Banner veya başlık kaldırıldı, sadece background image var */}
         </div>
         {/* Hamburger buton sadece mobilde */}
         <button
