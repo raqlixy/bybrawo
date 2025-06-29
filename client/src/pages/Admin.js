@@ -300,6 +300,17 @@ const Admin = ({ songs, setSongs, onSongsChange, content, setContent, onContentC
         {tab === 'banner' && (
           <div className="flex flex-col space-y-4">
             <h3 className="text-2xl font-bold text-theme">Banner Yönetimi</h3>
+            {/* Mevcut banner önizlemesi */}
+            {banner && banner.filename && (
+              <div className="flex flex-col items-center mb-2">
+                <span className="text-theme mb-1">Yüklü Banner:</span>
+                <img
+                  src={`${process.env.NODE_ENV === 'production' ? 'https://bybrawo.onrender.com' : 'http://localhost:10000'}/uploads/banners/${banner.filename}`}
+                  alt="Yüklü Banner"
+                  style={{ maxWidth: '100%', maxHeight: '120px', borderRadius: '12px', boxShadow: '0 2px 8px #0008' }}
+                />
+              </div>
+            )}
             <div className="flex flex-col space-y-2">
               <button onClick={handleBannerDelete} 
                 style={{ backgroundColor: 'var(--theme-accent)', color: 'var(--theme-text)' }}
