@@ -120,6 +120,10 @@ async function initDb() {
     username TEXT UNIQUE,
     password TEXT
   )`);
+  await pool.query(`CREATE TABLE IF NOT EXISTS visitor_counter (
+    id SERIAL PRIMARY KEY,
+    count INTEGER
+  )`);
 
   // Varsayılan içerik ekle (eğer yoksa)
   const { rows: contentRows } = await pool.query('SELECT COUNT(*) as count FROM content');
@@ -135,6 +139,10 @@ async function initDb() {
   const { rows: adminRows } = await pool.query('SELECT COUNT(*) as count FROM admin_users');
   if (parseInt(adminRows[0].count) === 0) {
     await pool.query('INSERT INTO admin_users (username, password) VALUES ($1, $2)', ['ByBrawo', '1358963rk']);
+  }
+  const { rows: visitorRows } = await pool.query('SELECT COUNT(*) as count FROM visitor_counter');
+  if (parseInt(visitorRows[0].count) === 0) {
+    await pool.query('INSERT INTO visitor_counter (count) VALUES (0)');
   }
 }
 
@@ -374,6 +382,27 @@ app.post('/api/admin/login', async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ error: 'Giriş kontrolü sırasında hata oluştu' });
+  }
+});
+
+// Ziyaretçi sayacı getir
+app.get('/api/visitor', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT count FROM visitor_counter WHERE id = 1');
+    res.json({ count: result.rows[0]?.count || 0 });
+  } catch (err) {
+    res.status(500).json({ error: 'Sayaç okunamadı' });
+  }
+});
+
+// Ziyaretçi sayacı arttır
+app.post('/api/visitor', async (req, res) => {
+  try {
+    await pool.query('UPDATE visitor_counter SET count = count + 1 WHERE id = 1');
+    const result = await pool.query('SELECT count FROM visitor_counter WHERE id = 1');
+    res.json({ count: result.rows[0]?.count || 0 });
+  } catch (err) {
+    res.status(500).json({ error: 'Sayaç arttırılamadı' });
   }
 });
 

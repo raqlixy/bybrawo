@@ -37,6 +37,8 @@ function App() {
   // RGB renk değiştirme efekti için state
   const [glitchColor, setGlitchColor] = useState({ r: 255, g: 0, b: 0 });
 
+  const [visitorCount, setVisitorCount] = useState(0);
+
   useEffect(() => {
     fetchSongs();
     fetchContent();
@@ -61,6 +63,23 @@ function App() {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    // Her sayfa değişiminde ziyaretçi sayacını arttır
+    const incVisitor = async () => {
+      try {
+        const response = await axios.post('/api/visitor');
+        setVisitorCount(response.data.count);
+      } catch (err) {
+        // Hata olursa mevcut değeri çekmeye çalış
+        try {
+          const res = await axios.get('/api/visitor');
+          setVisitorCount(res.data.count);
+        } catch {}
+      }
+    };
+    incVisitor();
+  }, [location.pathname]);
 
   const fetchSongs = async () => {
     try {
@@ -237,6 +256,26 @@ function App() {
         >
           raqlixy
         </a>
+      </div>
+
+      {/* Sol alt köşede ziyaretçi sayacı */}
+      <div style={{
+        position: 'fixed',
+        bottom: '20px',
+        left: '20px',
+        zIndex: 1000,
+        background: 'rgba(0,0,0,0.7)',
+        color: '#fff',
+        padding: '8px 18px',
+        borderRadius: '16px',
+        fontWeight: 'bold',
+        fontFamily: 'monospace',
+        fontSize: '16px',
+        boxShadow: '0 2px 8px #0008',
+        letterSpacing: '1px',
+        userSelect: 'none'
+      }}>
+        👁️ Ziyaretçi: {visitorCount}
       </div>
 
       <style jsx>{`
