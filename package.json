@@ -10,7 +10,8 @@
     "build": "cd client && npm run build",
     "build:all": "npm run install-all && npm run build",
     "start": "cd server && npm start",
-    "install-all": "npm install && cd server && npm install && cd ../client && npm install"
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
+    "postinstall": "cd client && npm install && chmod +x node_modules/.bin/react-scripts"
   },
   "engines": {
     "node": ">=16.0.0"
