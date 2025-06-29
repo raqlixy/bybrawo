@@ -317,7 +317,7 @@ const Admin = ({ songs, setSongs, onSongsChange, content, setContent, onContentC
                 className="font-bold px-4 py-2 rounded transition" disabled={loading}>{loading ? 'Siliniyor...' : 'Bannerı Sil'}</button>
             </div>
             <form onSubmit={handleBannerUpload} className="flex flex-col space-y-2">
-              <input type="file" accept="image/*" onChange={e => setBannerFile(e.target.files[0])} className="rounded px-3 py-2 bg-yellow-900 text-theme" />
+              <input type="file" name="banner" accept="image/*" onChange={e => setBannerFile(e.target.files[0])} className="rounded px-3 py-2 bg-yellow-900 text-theme" />
               <button type="submit" disabled={!bannerFile || loading} 
                 style={{ backgroundColor: 'var(--theme-primary)', color: 'var(--theme-text)' }}
                 className="font-bold px-4 py-2 rounded transition disabled:opacity-50 hover:opacity-80">{loading ? 'Yükleniyor...' : 'Banner Yükle'}</button>
