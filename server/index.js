@@ -212,8 +212,10 @@ app.put('/api/content', async (req, res) => {
 app.get('/api/theme', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM theme LIMIT 1');
+    console.log('Tema getirildi:', result.rows[0]);
     res.json(result.rows[0]);
   } catch (err) {
+    console.error('Tema getirme hatası:', err);
     res.status(500).json({ error: 'Tema yüklenirken hata oluştu' });
   }
 });
@@ -221,13 +223,22 @@ app.get('/api/theme', async (req, res) => {
 // Tema güncelle
 app.put('/api/theme', async (req, res) => {
   const { title, primaryColor, secondaryColor, accentColor, backgroundColor, textColor, navbarButtonColor } = req.body;
+  
+  console.log('Tema güncelleme isteği:', req.body);
+  
   try {
-    await pool.query('UPDATE theme SET title = $1, primaryColor = $2, secondaryColor = $3, accentColor = $4, backgroundColor = $5, textColor = $6, navbarButtonColor = $7 WHERE id = 1',
+    const updateResult = await pool.query('UPDATE theme SET title = $1, primaryColor = $2, secondaryColor = $3, accentColor = $4, backgroundColor = $5, textColor = $6, navbarButtonColor = $7 WHERE id = 1',
       [title, primaryColor, secondaryColor, accentColor, backgroundColor, textColor, navbarButtonColor]);
+    
+    console.log('Update sonucu:', updateResult.rowCount, 'satır güncellendi');
+    
     const result = await pool.query('SELECT * FROM theme WHERE id = 1');
+    console.log('Güncellenmiş tema:', result.rows[0]);
+    
     res.json(result.rows[0]);
   } catch (err) {
-    res.status(500).json({ error: 'Tema güncellenirken hata oluştu' });
+    console.error('Tema güncelleme hatası:', err);
+    res.status(500).json({ error: 'Tema güncellenirken hata oluştu: ' + err.message });
   }
 });
 
