@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Heart, Eye, Download, Pause } from 'lucide-react';
+import { Play, Download, Pause } from 'lucide-react';
 
 const Home = ({ songs, content, onPlaySong, currentSong, isPlaying }) => {
   return (
@@ -43,51 +43,6 @@ const Home = ({ songs, content, onPlaySong, currentSong, isPlaying }) => {
             ))}
           </ul>
         )}
-      </div>
-    </div>
-  );
-};
-
-const SongCard = ({ song, onPlay, isCurrentSong, isPlaying }) => {
-  return (
-    <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover:bg-white/20 transition-all duration-300 group">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-white truncate">{song.title}</h3>
-          <p className="text-white/60 text-sm">{song.artist}</p>
-        </div>
-        <button
-          onClick={onPlay}
-          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
-            isCurrentSong && isPlaying
-              ? 'bg-red-500 hover:bg-red-600'
-              : 'bg-white/20 hover:bg-white/30'
-          }`}
-        >
-          {isCurrentSong && isPlaying ? (
-            <div className="w-4 h-4 bg-white rounded-sm"></div>
-          ) : (
-            <Play className="w-4 h-4 text-white ml-1" />
-          )}
-        </button>
-      </div>
-
-      {song.description && (
-        <p className="text-white/60 text-sm mb-4 line-clamp-2">{song.description}</p>
-      )}
-
-      <div className="flex items-center justify-between text-sm text-white/40">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-1">
-            <Eye className="w-4 h-4" />
-            <span>{song.plays || 0}</span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <Heart className="w-4 h-4" />
-            <span>0</span>
-          </div>
-        </div>
-        <span>{new Date(song.uploadDate).toLocaleDateString('tr-TR')}</span>
       </div>
     </div>
   );

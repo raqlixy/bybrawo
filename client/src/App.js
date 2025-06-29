@@ -9,8 +9,12 @@ import Admin from './pages/Admin';
 import MusicPlayer from './components/MusicPlayer';
 import axios from 'axios';
 
-// Backend API için baseURL tanımla
-axios.defaults.baseURL = 'http://localhost:5000';
+// Backend API için baseURL tanımla - Production için dinamik
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? window.location.origin 
+  : 'http://localhost:5000';
+
+axios.defaults.baseURL = API_BASE_URL;
 
 function App() {
   const [songs, setSongs] = useState([]);

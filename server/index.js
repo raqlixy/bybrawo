@@ -17,7 +17,7 @@ const pool = new Pool({
 // CORS ayarları
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-app-name.onrender.com', 'http://localhost:3000']
+    ? true // Production'da tüm origin'lere izin ver
     : 'http://localhost:3000',
   credentials: true
 }));
@@ -347,6 +347,17 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
   });
 }
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Bir şeyler ters gitti!' });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Sayfa bulunamadı' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server ${PORT} portunda çalışıyor`);
