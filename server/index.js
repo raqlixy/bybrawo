@@ -332,6 +332,7 @@ app.get('/api/banner', async (req, res) => {
 // Banner yükle
 app.post('/api/banner', upload.single('banner'), async (req, res) => {
   const bannerFile = req.file;
+  console.log('Banner yükleme isteği geldi. Dosya:', bannerFile);
   if (!bannerFile) return res.status(400).json({ error: 'Banner resmi gerekli' });
   const uploadDate = new Date().toISOString();
   try {
@@ -343,10 +344,12 @@ app.post('/api/banner', upload.single('banner'), async (req, res) => {
       if (fs.existsSync(oldFilePath)) fs.removeSync(oldFilePath);
       await pool.query('DELETE FROM banner');
     }
+    console.log('Banner dosyası kaydedildiği path:', bannerFile.path);
     const result = await pool.query('INSERT INTO banner (filename, originalName, uploadDate) VALUES ($1, $2, $3) RETURNING *',
       [bannerFile.filename, bannerFile.originalname, uploadDate]);
     res.json(result.rows[0]);
   } catch (err) {
+    console.error('Banner yüklenirken hata:', err);
     res.status(500).json({ error: 'Banner yüklenirken hata oluştu' });
   }
 });
