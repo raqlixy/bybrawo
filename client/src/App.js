@@ -125,8 +125,29 @@ function App() {
       textColor: newTheme.textColor || '',
       navbarButtonColor: newTheme.navbarButtonColor || ''
     };
-    await axios.put('/api/theme', themeToSend);
-    fetchTheme();
+    
+    try {
+      await axios.put('/api/theme', themeToSend);
+      
+      // Tema state'ini hemen güncelle
+      setTheme(themeToSend);
+      
+      // CSS değişkenlerini hemen güncelle
+      document.documentElement.style.setProperty('--theme-primary', themeToSend.primaryColor || '#FFD600');
+      document.documentElement.style.setProperty('--theme-secondary', themeToSend.secondaryColor || '#FFA500');
+      document.documentElement.style.setProperty('--theme-accent', themeToSend.accentColor || '#FF6B35');
+      document.documentElement.style.setProperty('--theme-background', themeToSend.backgroundColor || '#1a0d0d');
+      document.documentElement.style.setProperty('--theme-text', themeToSend.textColor || '#FFFFFF');
+      document.documentElement.style.setProperty('--theme-navbar-button', themeToSend.navbarButtonColor || '#7ecbff');
+      
+      // Body background'ını da güncelle
+      document.body.style.backgroundColor = themeToSend.backgroundColor || '#1a0d0d';
+      
+    } catch (error) {
+      console.error('Tema güncellenirken hata:', error);
+      // Hata durumunda tekrar fetch et
+      fetchTheme();
+    }
   };
   const handleBannerUpdate = () => fetchBanner();
   const handleMessagesUpdate = () => fetchMessages();

@@ -185,8 +185,15 @@ const Admin = ({ songs, setSongs, onSongsChange, content, setContent, onContentC
   React.useEffect(() => {
     setContentForm(content);
   }, [content]);
+  
   React.useEffect(() => {
-    setThemeForm(theme);
+    setThemeForm({
+      ...theme,
+      navbarButtonColor: theme.navbarButtonColor || '#7ecbff',
+      textboxBgColor: theme.textboxBgColor || '#23203a',
+      cardBgColor: theme.cardBgColor || '#18162a',
+      borderColor: theme.borderColor || '#7ecbff',
+    });
     // Arka planı güncel tema rengine göre ayarla
     document.body.style.backgroundColor = theme.backgroundColor || '#1a0d0d';
   }, [theme]);
