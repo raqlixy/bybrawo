@@ -9,6 +9,7 @@ const TABS = [
   { key: 'songs', label: 'Şarkılar' },
   { key: 'content', label: 'İçerik' },
   { key: 'zdefteri', label: 'Z Defteri' },
+  { key: 'files', label: 'Dosya Yöneticisi' },
 ];
 
 const Admin = ({ songs, setSongs, onSongsChange, content, setContent, onContentChange, messages, setMessages, onMessagesChange, theme, setTheme, onThemeChange, banner, onBannerChange }) => {
@@ -214,6 +215,68 @@ const Admin = ({ songs, setSongs, onSongsChange, content, setContent, onContentC
     }
   }, [error]);
 
+  // Dosya Yöneticisi Bileşeni
+  function FileManager() {
+    const [files, setFiles] = React.useState([]);
+    const [selectedFile, setSelectedFile] = React.useState(null);
+    const [uploadFile, setUploadFile] = React.useState(null);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState('');
+    const fetchFiles = async () => {
+      try {
+        const res = await axios.get('/api/files');
+        setFiles(res.data);
+      } catch (err) {
+        setError('Dosyalar listelenemedi');
+      }
+    };
+    React.useEffect(() => { fetchFiles(); }, []);
+    const handleDelete = async (name) => {
+      if (!window.confirm('Silmek istediğine emin misin?')) return;
+      setLoading(true);
+      try {
+        await axios.delete('/api/files', { data: { filename: name } });
+        fetchFiles();
+      } catch {
+        setError('Dosya silinemedi');
+      }
+      setLoading(false);
+    };
+    const handleUpload = async (e) => {
+      e.preventDefault();
+      if (!uploadFile) return;
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('file', uploadFile);
+      try {
+        await axios.post('/api/files', formData);
+        setUploadFile(null);
+        fetchFiles();
+      } catch {
+        setError('Yükleme başarısız');
+      }
+      setLoading(false);
+    };
+    return (
+      <div className="flex flex-col space-y-4">
+        <h3 className="text-2xl font-bold text-theme">Dosya Yöneticisi</h3>
+        <form onSubmit={handleUpload} className="flex flex-row space-x-2 items-center mb-2">
+          <input type="file" onChange={e => setUploadFile(e.target.files[0])} className="rounded px-3 py-2 bg-yellow-900 text-theme" />
+          <button type="submit" className="font-bold px-4 py-2 rounded transition" style={{ backgroundColor: 'var(--theme-primary)', color: 'var(--theme-text)' }} disabled={loading || !uploadFile}>{loading ? 'Yükleniyor...' : 'Yükle'}</button>
+        </form>
+        {error && <div className="text-red-400">{error}</div>}
+        <ul className="space-y-2">
+          {files.map(f => (
+            <li key={f.name} className="flex items-center justify-between bg-yellow-900/30 rounded px-3 py-2">
+              <span>{f.name} {f.isDir ? '(Klasör)' : ''} {f.size ? `(${(f.size/1024).toFixed(1)} KB)` : ''}</span>
+              {!f.isDir && <button onClick={() => handleDelete(f.name)} className="ml-2 px-3 py-1 rounded bg-red-700 text-white font-bold hover:bg-red-900 transition">Sil</button>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
   if (!loggedIn) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-start px-2 md:px-0" style={{ background: 'repeating-linear-gradient(0deg, #2d1a1a 0px, #2d1a1a 1px, transparent 1px, transparent 32px), repeating-linear-gradient(90deg, #2d1a1a 0px, #2d1a1a 1px, transparent 1px, transparent 32px)', backgroundColor: 'var(--theme-background)', minHeight: '100vh' }}>
@@ -388,6 +451,8 @@ const Admin = ({ songs, setSongs, onSongsChange, content, setContent, onContentC
             </ul>
           </div>
         )}
+        {/* Dosya Yöneticisi */}
+        {tab === 'files' && <FileManager />}
       </div>
     </div>
   );
